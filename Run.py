@@ -3,16 +3,36 @@
 DICTIONARY = "words.txt"
 TITLE_FILE="title.txt"
 GRAPHIC_FILE = "hanged man.txt"
+GRAPHIC_SIZE = 10 
 INDENT = ""
+SCREEN_WIDTH = 40
+SCREEN_HEIGHT = 24
+
 
 class Tile:
 	def __init__(self,ch = None):
 		self.character = ch
 		self.visible = false
 
+
+class Hangman():
+   def __init__(self): 
+        self.graphicFile = open(GRAPHIC_FILE)
+        self.update()
+        
+   def display(self):
+        print self.graphic
 		
 
-screenMatrix = [[" " for x in xrange(5)] for x in xrange(5)] 
+   def update(self):
+       lines = []
+       for i in xrange(GRAPHIC_SIZE):
+          lines.append(self.graphicFile.readline())
+       self.graphic = "".join(lines)
+          
+           
+           
+screenMatrix = [[" " for x in xrange(SCREEN_WIDTH)] for x in xrange(SCREEN_HEIGHT)] 
 
 
 def printTitle():
@@ -22,7 +42,7 @@ def printTitle():
 
 def showHangman():
    with open(GRAPHIC_FILE) as titleFile:
-      title = titleFile.read()
+      graphic = titleFile.read()
       print title
 
 def newLine(num = 1):
@@ -31,6 +51,9 @@ def newLine(num = 1):
 if __name__ == '__main__':
     printTitle()
     newLine(5)
-    showHangman()
+    hangman = Hangman()
+    hangman.display()
+    hangman.update()
+    hangman.display()
 def init():
     pass
