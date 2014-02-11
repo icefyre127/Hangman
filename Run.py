@@ -13,24 +13,27 @@ INDENT = ""
 SCREEN_WIDTH = 40
 SCREEN_HEIGHT = 24
 WORD_FILE = "LIST_OF_WORDS.txt"
-
+HIDDEN_LETTER = " _ "
 
 class Word:
    def __init__(self,string):
-      self.word = [Letter(ch) for ch in string]
+      self.word = [self.Letter(ch) for ch in string]
    
    def __str__(self):
-      for ch in self.word:
-         print ch, 
+      word = []
+      for char in self.word:
+         word.append(str(char))
+
+      return "".join(word)
 
    class Letter:
       def __init__(self,char = None):
          self.character = char
-         self.visible = false
+         self.visible = False
 
       def __str__(self):
          if self.visible: return " %s " % self.char 
-         else: return " _ "
+         else: return HIDDEN_LETTER
       
 
 class HangmanPic():
@@ -55,6 +58,7 @@ class HangmanPic():
 
        self.graphic = "".join(lines)
 
+      
 
           
 
@@ -76,10 +80,10 @@ class HangmanGame:
  
    def __init__(self):
 
-       #used to store previously picked words
+       #used to store indexes of previously picked words, only storing indexes instead of words to conserve memory (line numbers take less space than the word)
        self.previousWords=[]        
 
-       #load the word dictionary into memory
+       #load the word dictionary into memory (keeping full list in memory for speed, shouldn't be a problem unless word list is insanely large)
        self.words = open(WORD_FILE).readlines()
        self.words = [str.rstrip(word) for word in self.words]
 
@@ -97,28 +101,14 @@ class HangmanGame:
           lineNum = random.randint(0,len(self.words)-1)
       
       self.previousWords.append(lineNum)       
-      self.word = self.words[lineNum]
+      self.word = Word(self.words[lineNum])
       
    
+      
    def debug(self):
       print "word = %s, previousWords = %s" % (self.word,self.previousWords)
 
    
-
-       
-#    def getWord(self):
-#       return self.word
-
-       
-# class Hangman:
-#    def __init__(self):
-#       self.num_letters_wrong = 0
-#       self.num_letters_correct = 0 
-#       self.secret_word = random.choice(word_list).upper()
-#       self.letter_complete_status = list(" _ " * len(secret_word)
-
-        
-
 
 def printTitle():
    with open(TITLE_FILE) as titleFile:
