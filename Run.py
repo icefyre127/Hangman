@@ -20,7 +20,7 @@ HIDDEN_LETTER = " _ "
 class Word:
    def __init__(self,string):
       self.word = [self.Letter(ch) for ch in string]
-#     self.debug = string
+      self.value = string
    def __str__(self):
       word = []
       for char in self.word:
@@ -39,7 +39,7 @@ class Word:
 
    def revealed(self):
       for letter in self.word:
-         if letter.character != " " and not letter.visible: 
+         if not letter.character.isspace() and not letter.visible: 
             return False
       return True
 
@@ -49,10 +49,10 @@ class Word:
          self.visible = False
 
       def __str__(self):
-         if self.visible: 
+         if self.character.isspace() or self.visible: 
             return " %s " % self.character 
          else: 
-            return HIDDEN_LETTER
+            return HIDDEN_LETTER  #print hidden symbol for unrevealed letters
       
 
 class HangmanPic():
@@ -122,7 +122,8 @@ class HangmanGame:
       
       return -1
 
-            
+ 
+#resets the game variables to give the player a chance to play again          
    def reset(self):
 
        #picks a random word to store internal variable called self.word
@@ -130,6 +131,8 @@ class HangmanGame:
        self.guessedLetters = []
        self.hangman = HangmanPic()
 
+#asks the player if they want to play again, if so resets the variables 
+#otherwise the program exits
    def playAgain(self):
       yesNo = raw_input("Play again? (Y/N): ")
       if yesNo[0].upper() == 'Y': 
@@ -138,25 +141,34 @@ class HangmanGame:
          print "Thanks for playing!"
          exit(0)      
 
+
    def play(self):
       print self.title
       print "\n"*5
 
 
 #message variable is used to store and communicate messages back to the player (e.g. correct guess, win, lose etc...)
-      message = """
+      print  """
 Welcome to hangman! Please guess one letter at a time, only the first letter typed will be taken as a guess 
 For example: if you type 'dog', I will only read the first letter 'd' as your guess)
 """
 
+      #variable used to store and print status messages to player
+      message = ""
 
       while True:
+         os.system('cls' if os.name == 'nt' else 'clear')
          print self.hangman
          print "\nWord:", self.word
          print "Previously guessed letters: ", ", ".join(self.guessedLetters)
-#used for debugging        print "WORD IS: ", self.word.debug  
+         print
+#used for debugging        print "WORD IS: ", self.word.value  
          print message
          guess = raw_input("\nGuess letter: ")
+         
+         if len(guess) == 0:
+            continue
+
          guess = guess[0]
 
          
@@ -179,16 +191,19 @@ For example: if you type 'dog', I will only read the first letter 'd' as your gu
             
             #Check if player lost the game
             if self.hangman.state == END_STATE: 
+               os.system('cls' if os.name == 'nt' else 'clear')
                print self.hangman
-               print "Sorry, you lose!"
+               print "Sorry, you lose! The word was: %s" % self.word.value
                self.playAgain()            
 
             
          elif matches > 0 :
             message =  "Congratulations! I've found "+ str(matches) + " match(s) for the letter "+ guess + "!"
-            
             #check if player won the game
             if self.word.revealed():
+               os.system('cls' if os.name == 'nt' else 'clear')
+               print self.hangman
+               print self.word
                print "You've won the game!"            
                self.playAgain()
 
@@ -197,7 +212,6 @@ For example: if you type 'dog', I will only read the first letter 'd' as your gu
 
     
 if __name__ == '__main__':
-
     game = HangmanGame()
     game.play()
     
